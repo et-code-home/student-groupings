@@ -2,13 +2,14 @@ AVOID = -1
 NEUTRAL = 0
 PREFERRED = 1
 
-def separate_students(preferences, group_size, rating):
+def separate_students(preferences, group_size):
     students = list(preferences.keys())
     for student in preferences:
+        groups.sort(key = len)
         if student not in placed:
             avoid = []
             for i, rating in enumerate(preferences[student]):
-                if rating == -1:
+                if rating == AVOID:
                     avoid.append(students[i-1])
             if len(avoid):
                 for person in avoid:
@@ -30,6 +31,7 @@ def separate_students(preferences, group_size, rating):
 def fill_students(preferences, group_size):
     students = list(preferences.keys())
     for student in preferences:
+        groups.sort(key = len)
         if student not in placed:
             matches = []
             for i, rating in enumerate(preferences[student]):
@@ -55,10 +57,11 @@ def fill_students(preferences, group_size):
 from preferences import pairing_preferences
 
 group_size = 5
-groups = [[] for _ in range(len(pairing_preferences) // group_size)]
+groups = [[] for _ in range(len(pairing_preferences) // group_size + 1)]
 placed = []
 
-separate_students(pairing_preferences, group_size, AVOID)
+separate_students(pairing_preferences, group_size)
+print(groups)
 fill_students(pairing_preferences, group_size)
 
 for i, group in enumerate(groups):
