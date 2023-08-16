@@ -5,7 +5,6 @@ PREFERRED = 1
 def separate_students(preferences, group_size):
     students = list(preferences.keys())
     for student in preferences:
-        groups.sort(key = len)
         if student not in placed:
             avoid = []
             for i, rating in enumerate(preferences[student]):
@@ -14,6 +13,7 @@ def separate_students(preferences, group_size):
             if len(avoid):
                 for person in avoid:
                     if person not in placed:
+                        groups.sort(key = len)
                         for group in groups:
                             if len(group) != group_size:
                                 if person not in group:
@@ -21,6 +21,7 @@ def separate_students(preferences, group_size):
                                     placed.append(person)
                                     break
                 if student not in placed:
+                    groups.sort(key = len)
                     for group in groups:
                         if len(group) != group_size:
                             if student not in group and not any(dude in group for dude in avoid):
@@ -31,12 +32,12 @@ def separate_students(preferences, group_size):
 def fill_students(preferences, group_size):
     students = list(preferences.keys())
     for student in preferences:
-        groups.sort(key = len)
         if student not in placed:
             matches = []
             for i, rating in enumerate(preferences[student]):
                 if rating == PREFERRED:
                     matches.append(students[i-1])
+            groups.sort(key = len)
             for group in groups:
                 if len(group) != group_size:
                     if student not in group and any(dude in group for dude in matches):
@@ -46,6 +47,7 @@ def fill_students(preferences, group_size):
 
     for student in preferences:
         if student not in placed:
+            groups.sort(key = len)
             for group in groups:
                 if len(group) != group_size:
                     group.append(student)
@@ -54,11 +56,20 @@ def fill_students(preferences, group_size):
             
 
 # Load preferences from the 'preferences.py' file
-from preferences import pairing_preferences
+from preferences import pairing_preferences, project_preferences
 
 group_size = 5
 groups = [[] for _ in range(len(pairing_preferences) // group_size + 1)]
 placed = []
+
+project_options = 2
+projects = [[] for _ in range(project_options)]
+for i in range(len(projects)):
+    for student in project_preferences:    
+        if project_preferences[student][i] >= 3:
+            projects[i].append(student)
+
+print(projects)
 
 separate_students(pairing_preferences, group_size)
 print(groups)
